@@ -1,65 +1,75 @@
-import Image from "next/image";
+// app/page.tsx
+'use client'
 
-export default function Home() {
+import { useState } from 'react';
+import { loginUsuario } from './actions';
+
+export default function LoginPage() {
+  const [erro, setErro] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  async function handleLogin(formData: FormData) {
+    setLoading(true);
+    setErro(null);
+    const result = await loginUsuario(formData);
+    
+    if (result?.error) {
+      setErro(result.error);
+      setLoading(false);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-blue-800 to-cyan-500 p-4">
+      <div className="bg-white/95 backdrop-blur-md p-10 rounded-3xl shadow-2xl w-full max-w-md border border-white/20 transform transition-all hover:scale-[1.01] duration-500">
+        
+        <div className="text-center mb-10">
+          <div className="bg-gradient-to-r from-blue-600 to-cyan-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg animate-bounce">
+             <span className="text-4xl">🚀</span>
+          </div>
+          <h1 className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-indigo-700 to-cyan-600 mb-2">Conecta Mais</h1>
+          <p className="text-gray-500 font-medium">Gestão de Base e Inteligência</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+        {erro && (
+          <div className="bg-red-100/80 border border-red-200 text-red-700 p-4 rounded-2xl mb-6 text-sm text-center font-bold animate-pulse">
+            {erro}
+          </div>
+        )}
+
+        <form action={handleLogin} className="space-y-5">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">E-mail</label>
+            <input 
+              type="email" 
+              name="email"
+              required
+              className="w-full bg-gray-50 border border-gray-200 p-4 rounded-2xl focus:ring-4 focus:ring-cyan-500/20 focus:border-cyan-500 focus:bg-white transition-all outline-none"
+              placeholder="Digite seu e-mail"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </div>
+
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2 ml-1">Senha</label>
+            <input 
+              type="password" 
+              name="senha"
+              required
+              className="w-full bg-gray-50 border border-gray-200 p-4 rounded-2xl focus:ring-4 focus:ring-cyan-500/20 focus:border-cyan-500 focus:bg-white transition-all outline-none"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button 
+            type="submit" 
+            disabled={loading}
+            className="w-full mt-4 bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-500 hover:to-cyan-400 text-white font-bold p-4 rounded-2xl transform hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            {loading ? 'Validando Acesso...' : 'Entrar no Sistema'}
+          </button>
+        </form>
+
+      </div>
+    </main>
   );
 }
