@@ -1,4 +1,6 @@
 // app/api/exportar-eleitores/route.ts
+export const dynamic = 'force-dynamic'; // <-- Esta linha impede que a Vercel quebre na compilação
+
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { db } from '../../../db';
@@ -16,13 +18,11 @@ export async function GET(request: NextRequest) {
   const user = JSON.parse(sessionCookie.value);
   const isAdmin = user.role === 'admin';
 
-  // 1. Extrai os filtros da URL de exportação
   const searchParams = request.nextUrl.searchParams;
   const filtroBairro = searchParams.get('bairro');
   const filtroTipo = searchParams.get('tipo');
   const filtroLideranca = searchParams.get('lideranca');
 
-  // 2. Aplica as MESMAS condições da tela de relatório
   const condicoes = [];
   if (!isAdmin) condicoes.push(eq(voters.lideranca_id, user.id));
   if (filtroBairro) condicoes.push(like(voters.bairro, `%${filtroBairro}%`));
@@ -31,7 +31,6 @@ export async function GET(request: NextRequest) {
 
   const queryWhere = condicoes.length > 0 ? and(...condicoes) : undefined;
 
-  // 3. Busca no banco
   const listaEleitores = await db
     .select({
       nome: voters.nome_completo,
