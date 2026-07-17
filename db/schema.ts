@@ -62,11 +62,10 @@ export const voters = sqliteTable('voters', {
   secretaria: text('secretaria'),
   local_trabalho: text('local_trabalho'),
 
-  // Auditoria
+ // Auditoria
   criado_em: text('criado_em').default(sql`CURRENT_TIMESTAMP`),
   atualizado_em: text('atualizado_em').default(sql`CURRENT_TIMESTAMP`),
 }, (table) => ({
-  // CORREÇÃO AQUI: Trocado 'uniqueIndex' por 'index' para não bloquear cadastros no mesmo bairro!
   liderancaIdx: index('lideranca_idx').on(table.lideranca_id),
   bairroIdx: index('bairro_idx').on(table.bairro),
 }));
