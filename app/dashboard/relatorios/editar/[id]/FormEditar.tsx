@@ -2,7 +2,7 @@
 'use client'
 
 import { useState } from 'react';
-import { atualizarEleitor } from '../../../../../actions';
+import { atualizarEleitor } from '../../../../actions';
 import { useRouter } from 'next/navigation';
 
 export default function FormEditar({ eleitor }: { eleitor: any }) {
